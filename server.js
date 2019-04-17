@@ -29,14 +29,10 @@ let io = socket(server);
 io.sockets.on('connection', newConnection);
 
 
-let newGame = game.Game(1);
-
 function newConnection(socket) {
 
     //print out new connection 
     console.log("New Connection: " + socket.id);
-
-    game.addPlayer(socket);
  
 
 }

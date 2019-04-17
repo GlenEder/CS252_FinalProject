@@ -7,20 +7,66 @@
            * {
                text-align: center;
            }
+
+           html, body {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+           }
+
+           section {
+            width: 100%;
+            height: 100%;
+            margin: auto;
+            background-size: cover;
+            display: table;
+            top: 0;
+           }
+
+           div {
+            display: table-cell;
+            vertical-align: middle;
+            width: 100%;
+            max-width: none;
+           }
+
         </style>
+
+        <script>
+            
+            function login() {
+                let name = document.getElementById("username");
+                let pass = document.getElementById("password");
+
+                let nullFields = false;
+
+                //check for empty fields
+                if(name.value == "" || pass.value == "") {
+                    document.getElementById("loginError").innerHTML = "All Fields Must Be Filled";
+                }
+                else {
+                    console.log("Username: " + name.value + ", Password: " + pass.value);
+                }
+            }
+            
+        </script>
+
     </head>
     <body>
-        <h1>FEAST>INFECT</h1>
+        <section>
+            <div>
+                <h1>Feast>Infect</h1>
+                <form>
+                    Username: <input type="text" id="username"><br>
+                    Password: <input type="password" id="password"><br><br>
+                    <button onclick="login()">Login</button><br>
+                </form>
+                <p style="color:red" id="loginError"></p>
+                <a href="createAccount.html">Don't have an account?</a>
+            </div>
+        </section>
 
-        <form>
-            Username:<br>
-            <input type="text" name="username"><br>
-            Password:<br>
-            <input type="password" name="password">
-        </form>
-        
-        <a href="createAccount.html">Create New Account</a>
-        <a href="Feast-Infect.html">Launch Game</a>
 
     </body>
 </html>

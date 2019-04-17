@@ -18,6 +18,7 @@ let ref = database.ref('users');
 function login() {
     let name = document.getElementById("username");
     let pass = document.getElementById("password");
+    let error = document.getElementById("loginError");
 
     let nullFields = false;
 
@@ -33,14 +34,25 @@ function login() {
         //get user data
         ref.on('value', function(data) {
 
+        
             let users = data.val();
-            let keys = Object.keys(users);
-            for(var i = 0; i < keys.length; i++) {
-                let k = keys[i];
-                let currName = users[k].name;
-                if(currName == name.value) {
-                    userExists = true;
-                    break;
+            if(users != null) {
+                let keys = Object.keys(users);
+
+                //check for username already in database
+                for(var i = 0; i < keys.length; i++) {
+                    let k = keys[i];
+                    let currName = users[k].name;
+                    if(currName == name.value) {
+                        userExists = true;
+
+                        //if password is correct, login
+                        if(users[k].password == pass.value) {
+                            users[k].online = true;
+                        }
+
+                        break;
+                    }
                 }
             }
 
@@ -50,11 +62,12 @@ function login() {
     
                 let data = {
                     name: name.value,
-                    password: pass.value
+                    password: pass.value,
+                    online: true
                 }
                 ref.push(data);
-            }else {
-               console.log("Username already exists");
+
+                
             }
 
         }, function(err) {

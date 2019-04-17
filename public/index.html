@@ -33,24 +33,10 @@
 
         </style>
 
-        <script>
-            
-            function login() {
-                let name = document.getElementById("username");
-                let pass = document.getElementById("password");
 
-                let nullFields = false;
-
-                //check for empty fields
-                if(name.value == "" || pass.value == "") {
-                    document.getElementById("loginError").innerHTML = "All Fields Must Be Filled";
-                }
-                else {
-                    console.log("Username: " + name.value + ", Password: " + pass.value);
-                }
-            }
-            
-        </script>
+        <script src="https://www.gstatic.com/firebasejs/5.9.4/firebase.js"></script>
+        <script src="home.js"></script>
+      
 
     </head>
     <body>

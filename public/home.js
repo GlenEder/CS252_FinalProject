@@ -8,11 +8,11 @@ var config = {
     messagingSenderId: "118729444601"
 };
 firebase.initializeApp(config);
-console.log(firebase);
 
 
 // Get a reference to the database service
-var database = firebase.database();
+let database = firebase.database();
+let ref = database.ref('users');
 
 
 function login() {
@@ -27,5 +27,40 @@ function login() {
     }
     else {
         console.log("Username: " + name.value + ", Password: " + pass.value);
+
+        let userExists = false;
+
+        //get user data
+        ref.on('value', function(data) {
+
+            let users = data.val();
+            let keys = Object.keys(users);
+            for(var i = 0; i < keys.length; i++) {
+                let k = keys[i];
+                let currName = users[k].name;
+                if(currName == name.value) {
+                    userExists = true;
+                    break;
+                }
+            }
+
+            if(userExists == false) {
+
+                console.log("Creating new user");
+    
+                let data = {
+                    name: name.value,
+                    password: pass.value
+                }
+                ref.push(data);
+            }else {
+               console.log("Username already exists");
+            }
+
+        }, function(err) {
+            console.log(err);
+        })
+
+        
     }
 }

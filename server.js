@@ -31,6 +31,14 @@ function newConnection(socket) {
     //print out new connection 
     console.log("New Connection: " + socket.id);
 
+    //create user
+    socket.on('createUser', function (data) {
+        console.log(data);   
+    })
+
+
+
+
     //setup player position message
     socket.on('playerPosition', updatePlayerPosition);
 

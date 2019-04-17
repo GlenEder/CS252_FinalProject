@@ -1,0 +1,31 @@
+{
+  "name": "cs252_finalproject",
+  "version": "1.0.0",
+  "description": "CS 252 server project",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/GlenEder/CS252_FinalProject.git"
+  },
+  "keywords": [
+    "CS252",
+    "server",
+    "node.js",
+    "express",
+    "socket.io"
+  ],
+  "author": "Glen Michael Austin Eder",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/GlenEder/CS252_FinalProject/issues"
+  },
+  "homepage": "https://github.com/GlenEder/CS252_FinalProject#readme",
+  "dependencies": {
+    "express": "^4.16.4",
+    "socket.io": "^2.2.0"
+  }
+}

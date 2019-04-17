@@ -66,8 +66,6 @@ function login() {
                     online: true
                 }
                 ref.push(data);
-
-                
             }
 
         }, function(err) {

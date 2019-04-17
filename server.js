@@ -26,6 +26,20 @@ let io = socket(server);
 //set event for new connection
 io.sockets.on('connection', newConnection);
 
-function newConnection(data) {
+function newConnection(socket) {
+
+    //print out new connection 
+    console.log("New Connection: " + socket.id);
+
+    //setup player position message
+    socket.on('playerPosition', updatePlayerPosition);
+
+    function updatePlayerPosition(data) {
+        //send player position data to all other players
+        socket.broadcast.emit('playerPosition', data);
+
+        console.log(data);
+    }
     
+
 }

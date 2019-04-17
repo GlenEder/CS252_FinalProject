@@ -33,7 +33,7 @@ function newConnection(socket) {
 
     //create user
     socket.on('createUser', function (data) {
-        console.log(data);   
+         
     })
 
 
@@ -50,4 +50,8 @@ function newConnection(socket) {
     }
     
 
+}
+
+function addNewUser(data) {
+    
 }

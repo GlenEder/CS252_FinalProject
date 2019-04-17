@@ -6,39 +6,77 @@ let HEIGHT = 501;
 let FRAMERATE = 30;
 
 let mouseBufferZone = 100;
+var survivorColor;
+var zombieColor;
+
+let others = [];
 
 function setup() {
     //create html canvas
     createCanvas(WIDTH, HEIGHT);
     background(51);
 
-    //create player
-    player = new Player(100, 100);
+    //set colors 
+    zombieColor = color('red');
+    survivorColor = color('blue');
 
     //set framerate
     frameRate(FRAMERATE)
 
+    
+
     //create socket to server
     socket = io.connect('http://localhost:6656');
+
+
+
+    socket.on('setName', function(name) {
+        //create player
+        player = new Player(name, 100, 100);
+    })
+
+   
+    socket.on('becomeZombie', function() {
+        player.isZombie = true;
+        player.color = zombieColor;
+    });
+
+    socket.on('playerPosition', function (data) {
+        console.log(data);
+    })
+
+
 }
 
 function draw() {
 
-    //update player
-    player.update();
+    if(player != null) {
+        //update player
+        player.update();
 
-    //render player
-    player.render();
+        //clear previous screen
+        background(51);
+
+        //render other players
+        for(var i = 0; i < others.size; i++) {
+            others[i].render();
+        }
+
+        //render player
+        player.render();
+    }
+    
 }
 
-function Player(xPos, yPos) {
+function Player(name, xPos, yPos) {
 
+    this.username = name;
     this.x = xPos;
     this.y = yPos;
     this.size = 30;
     this.speed = 1;
     this.isZombie = false;
-    this.userColor = color(255, 0, 0);
+    this.userColor = survivorColor;
 
 
     this.render = function() {
@@ -54,7 +92,8 @@ function Player(xPos, yPos) {
         let data = {
             x: this.x,
             y: this.y,
-            isZombie: this.isZombie
+            isZombie: this.isZombie,
+            name: this.username,
         };
 
         //send player position to server
@@ -80,13 +119,27 @@ function Player(xPos, yPos) {
             this.x += this.speed;
         }
     }
-
-
-
-
 }
 
-function getMouseDirection() {
+function OtherPlayer(name, x, y, zomb) {
+    this.username = name;
+    this.xPos = x;
+    this.yPos = y;
+    this.isZombie = zomb;
 
-    
+    this.render = function() {
+        console.log("rendering other player");
+        if(this.isZombie) {
+            fill(zombieColor);
+        }else {
+            fill(survivorColor);
+        }
+
+        let x = (WIDTH / 2) + (data.x - player.x);
+        let y = (HEIGHT / 2) + (data.y - player.y);
+
+        ellipse(x, y, player.size, player.size);
+    }
 }
+
+

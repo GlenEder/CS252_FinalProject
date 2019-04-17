@@ -1,6 +1,8 @@
 let express = require('express');   //import express 
 let socket = require('socket.io');  //import socket.io
 
+let game = require('./game.js');
+
 //set port from args 
 var PORT;
 if(arguments.length != 2) {
@@ -27,44 +29,15 @@ let io = socket(server);
 io.sockets.on('connection', newConnection);
 
 
+let newGame = game.Game(1);
 
 function newConnection(socket) {
 
     //print out new connection 
     console.log("New Connection: " + socket.id);
 
-    //create user
-    socket.on('createUser', function (data) {
-         let success = addNewUser(data);
-
-         if(success) {
-            socket.emit('userCreated');
-         }else {
-             socket.emit('userExists');
-         }
-    })
-
-
-
-
-    //setup player position message
-    socket.on('playerPosition', updatePlayerPosition);
-
-    function updatePlayerPosition(data) {
-        //send player position data to all other players
-        socket.broadcast.emit('playerPosition', data);
-
-        console.log(data);
-    }
-    
+    game.addPlayer(socket);
+ 
 
 }
 
-function addNewUser(data) {
-
-    /*TODO: 
-        check if username exists
-        add user to database
-    */
-    return true;
-}

@@ -17,7 +17,11 @@
             let socket = io.connect('http://localhost:6656');
 
             socket.on('userExists', function() {
-                        document.getElementById("passError").innerHTML = "Username is already taken";
+                document.getElementById("passError").innerHTML = "Username is already taken";
+            })
+
+            socket.on('userCreated', function() {
+                window.location.href = "createJoin.html";
             })
 
             function createTheAccount() {

@@ -26,6 +26,8 @@ let io = socket(server);
 //set event for new connection
 io.sockets.on('connection', newConnection);
 
+
+
 function newConnection(socket) {
 
     //print out new connection 
@@ -36,7 +38,7 @@ function newConnection(socket) {
          let success = addNewUser(data);
 
          if(success) {
-
+            socket.emit('userCreated');
          }else {
              socket.emit('userExists');
          }
@@ -60,5 +62,9 @@ function newConnection(socket) {
 
 function addNewUser(data) {
 
-    return false;
+    /*TODO: 
+        check if username exists
+        add user to database
+    */
+    return true;
 }

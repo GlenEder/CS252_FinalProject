@@ -33,7 +33,13 @@ function newConnection(socket) {
 
     //create user
     socket.on('createUser', function (data) {
-         
+         let success = addNewUser(data);
+
+         if(success) {
+
+         }else {
+             socket.emit('userExists');
+         }
     })
 
 
@@ -53,5 +59,6 @@ function newConnection(socket) {
 }
 
 function addNewUser(data) {
-    
+
+    return false;
 }

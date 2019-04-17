@@ -13,7 +13,12 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.3/socket.io.js"></script>
 
         <script>
+            //create socket to server
+            let socket = io.connect('http://localhost:6656');
 
+            socket.on('userExists', function() {
+                        document.getElementById("passError").innerHTML = "Username is already taken";
+            })
 
             function createTheAccount() {
 
@@ -26,9 +31,7 @@
                     document.getElementById("passError").innerHTML = "Passwords do not match!";
                 }
                 else {
-                    //create socket to server
-                    let socket = io.connect('http://localhost:6656');
-
+                   
                     let data = {
                         name: document.getElementById("USERNAME").value,
                         password: document.getElementById("PASSWORD").value

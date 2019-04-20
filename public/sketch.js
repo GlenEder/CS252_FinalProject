@@ -10,6 +10,17 @@ var survivorColor;
 var zombieColor;
 
 
+// Initialize Firebase
+var config = {
+    apiKey: "AIzaSyBaDeefOtZNxxFXvacoXIMBGZB_S8a_HIc",
+    authDomain: "feastinfest.firebaseapp.com",
+    databaseURL: "https://feastinfest.firebaseio.com",
+    projectId: "feastinfest",
+    storageBucket: "",
+    messagingSenderId: "118729444601"
+};
+firebase.initializeApp(config);
+
 //handle user logged in/out
 firebase.auth().onAuthStateChanged(function(user) {
     if (user) {
@@ -18,7 +29,7 @@ firebase.auth().onAuthStateChanged(function(user) {
         //handle user logged in
         window.location.href = "index.html";
     }
-  });
+});
 
 function setup() {
     //create html canvas
@@ -37,23 +48,8 @@ function setup() {
     //create socket to server
     socket = io.connect('http://localhost:6656');
 
-
-
-    socket.on('setName', function(name) {
-        //create player
-        player = new Player(name, 100, 100);
-    })
-
-   
-    socket.on('becomeZombie', function() {
-        player.isZombie = true;
-        player.color = zombieColor;
-    });
-
-    socket.on('playerPosition', function (data) {
-        console.log(data);
-    })
-
+    //create player 
+    player = new Player("name", 100, 100);
 
 }
 
@@ -65,11 +61,6 @@ function draw() {
 
         //clear previous screen
         background(51);
-
-        //render other players
-        for(var i = 0; i < others.size; i++) {
-            others[i].render();
-        }
 
         //render player
         player.render();

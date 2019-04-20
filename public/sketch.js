@@ -102,7 +102,7 @@ function Player(xPos, yPos) {
         };
 
         //send player position to server
-        socket.emit('playerPosition', data);
+        socket.emit('update', data);
 
     }
 

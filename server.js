@@ -18,6 +18,7 @@ function Client(id, x, y) {
     this.id = id;
     this.x = x;
     this.y = y;
+    this.isZomb = false;
 }
 
 //create server application 
@@ -41,10 +42,31 @@ function newConnection(socket) {
     //print out new connection 
     console.log("New Connection: " + socket.id);
     
+    //handle player creation
     socket.on('start', function(data) {
         let client = new Client(socket.id, data.x, data.y)
         clients.push(client);
     })
 
+    //handle player updates
+    socket.on('update', updatePlayerInfo);
+
+}
+
+function updatePlayerInfo(data) {
+    //find client 
+    var currClient;
+    for(var i = 0; i < clients.length; i++) {
+        if(socket.id == clients[i].id) {
+            //set client
+            currClient = clients[i];
+            break;
+        }
+    }
+
+    //update information
+    currClient.x = data.x;
+    currClient.y = data.y;
+    currClient.isZomb = data.isZombie;
 }
 

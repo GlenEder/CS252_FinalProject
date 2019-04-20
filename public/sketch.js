@@ -48,8 +48,6 @@ function setup() {
     //create socket to server
     socket = io.connect('http://localhost:6656');
 
-    //create player 
-    player = new Player("name", 100, 100);
 
 }
 
@@ -68,9 +66,8 @@ function draw() {
     
 }
 
-function Player(name, xPos, yPos) {
+function Player(xPos, yPos) {
 
-    this.username = name;
     this.x = xPos;
     this.y = yPos;
     this.size = 30;
@@ -128,7 +125,7 @@ function OtherPlayer(name, x, y, zomb) {
     this.isZombie = zomb;
 
     this.render = function() {
-        console.log("rendering other player");
+
         if(this.isZombie) {
             fill(zombieColor);
         }else {

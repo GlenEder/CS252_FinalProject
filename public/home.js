@@ -14,11 +14,22 @@ firebase.initializeApp(config);
 let database = firebase.database();
 
 
+//handle user logged in
+firebase.auth().onAuthStateChanged(function(user) {
+    if (user) {
+      // User is signed in.
+      window.alert("User logged in");
+    } else {
+      // No user is signed in.
+    }
+  });
+
+
 function checkDataFields() {
     //check for empty fields
-    let name = document.getElementById("username");
+    let email = document.getElementById("email");
     let pass = document.getElementById("password");
-    if(name.value == "" || pass.value == "") {
+    if(email.value == "" || pass.value == "") {
         window.alert("All entry fields must be filled");
         return false;
     }
@@ -27,20 +38,11 @@ function checkDataFields() {
 }
 
 function login() {
-    let name = document.getElementById("username");
+    let email = document.getElementById("email");
     let pass = document.getElementById("password");
 
     //check data fields are filled
     if(checkDataFields() == false) { return; } 
         
-    console.log("Loggin in: "+ name.value);
-
-    //get users from database
-    let users = database.ref("users");
-    let keys = Object.keys(users);
-
-    for(var i = 0; i < keys.length; i++) {
-
-    }
 
 }

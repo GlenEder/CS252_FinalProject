@@ -64,9 +64,12 @@ function updatePlayerInfo(data) {
         }
     }
 
-    //update information
-    currClient.x = data.x;
-    currClient.y = data.y;
-    currClient.isZomb = data.isZombie;
+    if(currClient != null) {
+        //update information
+        currClient.x = data.x;
+        currClient.y = data.y;
+        currClient.isZomb = data.isZombie;
+    }
+   
 }
 

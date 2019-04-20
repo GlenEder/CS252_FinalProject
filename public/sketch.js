@@ -98,7 +98,8 @@ function Player(xPos, yPos) {
     this.x = xPos;
     this.y = yPos;
     this.size = 30;
-    this.speed = 1;
+    this.halfSize = this.size / 2;
+    this.speed = 2;
     this.isZombie = false;
     this.userColor = survivorColor;
 
@@ -150,19 +151,19 @@ function Player(xPos, yPos) {
 
     this.capMovement = function(){
         //cap x position
-        if(this.x - this.size < 0) {
-            this.x = this.size;
+        if(this.x - this.halfSize < 0) {
+            this.x = this.halfSize;
         }
-        else if (this.x + this.size > GAME_WIDTH) {
-            this.x = GAME_WIDTH - this.size;
+        else if (this.x + this.halfSize > GAME_WIDTH) {
+            this.x = GAME_WIDTH - this.halfSize;
         }
 
         //cap y position
-        if(this.y - this.size < 0) {
-            this.y = this.size;
+        if(this.y - this.halfSize < 0) {
+            this.y = this.halfSize;
         }
-        else if(this.y + this.size > GAME_HEIGHT) {
-            this.y = GAME_HEIGHT - this.size;
+        else if(this.y + this.halfSize > GAME_HEIGHT) {
+            this.y = GAME_HEIGHT - this.halfSize;
         }
     }
 }

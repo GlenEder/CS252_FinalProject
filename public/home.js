@@ -12,66 +12,62 @@ firebase.initializeApp(config);
 
 // Get a reference to the database service
 let database = firebase.database();
-let ref = database.ref('users');
 
+
+//handle user logged in
+firebase.auth().onAuthStateChanged(function(user) {
+    if (user) {
+      // User is signed in.
+      window.location.href = "Feast-Infect.html";
+    } else {
+      // No user is signed in.
+    }
+  });
+
+
+function checkDataFields() {
+    //check for empty fields
+    let email = document.getElementById("email");
+    let pass = document.getElementById("password");
+    if(email.value == "" || pass.value == "") {
+        window.alert("All entry fields must be filled");
+        return false;
+    }
+
+    return true;
+}
 
 function login() {
-    let name = document.getElementById("username");
-    let pass = document.getElementById("password");
-    let error = document.getElementById("loginError");
 
-    let nullFields = false;
-
-    //check for empty fields
-    if(name.value == "" || pass.value == "") {
-        document.getElementById("loginError").innerHTML = "All Fields Must Be Filled";
-    }
-    else {
-        console.log("Username: " + name.value + ", Password: " + pass.value);
-
-        let userExists = false;
-
-        //get user data
-        ref.on('value', function(data) {
-
+    //check data fields are filled
+    if(checkDataFields() == false) { return; } 
         
-            let users = data.val();
-            if(users != null) {
-                let keys = Object.keys(users);
+    let email = document.getElementById("email").value;
+    let password = document.getElementById("password").value;
 
-                //check for username already in database
-                for(var i = 0; i < keys.length; i++) {
-                    let k = keys[i];
-                    let currName = users[k].name;
-                    if(currName == name.value) {
-                        userExists = true;
-
-                        //if password is correct, login
-                        if(users[k].password == pass.value) {
-                            users[k].online = true;
-                        }
-
-                        break;
-                    }
-                }
-            }
-
-            if(userExists == false) {
-
-                console.log("Creating new user");
     
-                let data = {
-                    name: name.value,
-                    password: pass.value,
-                    online: true
-                }
-                ref.push(data);
+    //login user in firebase
+    firebase.auth().signInWithEmailAndPassword(email, password).catch(function(error) {
+        // Handle Errors here.
+        var errorCode = error.code;
+
+        if(errorCode == 'auth/wrong-password') {
+          alert("Invalid Password");
+        }else {
+
+          //attempt to create new user
+          firebase.auth().createUserWithEmailAndPassword(email, password).catch(function(error) {
+            // Handle Errors here.
+            var errorCode = error.code;
+            if (errorCode == 'auth/weak-password') {
+              alert('Password provided is too weak');
             }
-
-        }, function(err) {
-            console.log(err);
-        })
-
-        
-    }
+            else if (errorCode == 'auth/email-already-in-use') {
+              alert('E-mail is already registered to user');
+            }
+  
+          });
+        }
+    });
+  
 }

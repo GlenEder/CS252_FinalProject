@@ -18,7 +18,7 @@ let database = firebase.database();
 firebase.auth().onAuthStateChanged(function(user) {
     if (user) {
       // User is signed in.
-      window.alert("User logged in");
+      window.location.href = "Feast-Infect.html";
     } else {
       // No user is signed in.
     }
@@ -45,15 +45,29 @@ function login() {
     let email = document.getElementById("email").value;
     let password = document.getElementById("password").value;
 
-    //create user in firebase
-    firebase.auth().createUserWithEmailAndPassword(email, password).catch(function(error) {
+    
+    //login user in firebase
+    firebase.auth().signInWithEmailAndPassword(email, password).catch(function(error) {
         // Handle Errors here.
         var errorCode = error.code;
-        var errorMessage = error.message;
 
-        window.alert("Error creating user in firebase");
-        console.log(errorCode);
-        console.log(errorMessage);
-        
-      });
+        if(errorCode == 'auth/wrong-password') {
+          alert("Invalid Password");
+        }else {
+
+          //attempt to create new user
+          firebase.auth().createUserWithEmailAndPassword(email, password).catch(function(error) {
+            // Handle Errors here.
+            var errorCode = error.code;
+            if (errorCode == 'auth/weak-password') {
+              alert('Password provided is too weak');
+            }
+            else if (errorCode == 'auth/email-already-in-use') {
+              alert('E-mail is already registered to user');
+            }
+  
+          });
+        }
+    });
+  
 }

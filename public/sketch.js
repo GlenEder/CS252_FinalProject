@@ -9,7 +9,16 @@ let mouseBufferZone = 100;
 var survivorColor;
 var zombieColor;
 
-let others = [];
+
+//handle user logged in/out
+firebase.auth().onAuthStateChanged(function(user) {
+    if (user) {
+        //User logged in
+    } else {
+        //handle user logged in
+        window.location.href = "index.html";
+    }
+  });
 
 function setup() {
     //create html canvas

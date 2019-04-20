@@ -12,6 +12,13 @@ if(arguments.length != 2) {
 }
 
 
+var clients = [];
+
+function Client(id, x, y) {
+    this.id = id;
+    this.x = x;
+    this.y = y;
+}
 
 //create server application 
 let app = express();
@@ -33,7 +40,11 @@ function newConnection(socket) {
 
     //print out new connection 
     console.log("New Connection: " + socket.id);
- 
+    
+    socket.on('start', function(data) {
+        let client = new Client(socket.id, data.x, data.y)
+        clients.push(client);
+    })
 
 }
 

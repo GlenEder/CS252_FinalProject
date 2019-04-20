@@ -3,6 +3,8 @@ var player;     //player object
 
 let WIDTH = 601;
 let HEIGHT = 501;
+let GAME_WIDTH = 1000;
+let GAME_HEIGHT = 1000;
 let FRAMERATE = 30;
 
 let mouseBufferZone = 100;
@@ -48,6 +50,13 @@ function setup() {
     //create socket to server
     socket = io.connect('http://localhost:6656');
 
+    //create new player and notify server 
+    player = new Player(random(GAME_WIDTH), random(GAME_HEIGHT));
+    let data = {
+        x: player.x,
+        y: player.y
+    }
+    socket.emit('start', data);
 
 }
 
@@ -90,7 +99,6 @@ function Player(xPos, yPos) {
             x: this.x,
             y: this.y,
             isZombie: this.isZombie,
-            name: this.username,
         };
 
         //send player position to server

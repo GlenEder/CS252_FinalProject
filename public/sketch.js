@@ -69,6 +69,7 @@ function draw() {
         //clear previous screen
         background(51);
 
+
         //render player
         player.render();
     }
@@ -94,6 +95,9 @@ function Player(xPos, yPos) {
     this.update = function() {
         if(mouseIsPressed) {this.moveInMouseDirection();}
         
+        //cap movement to stay inside bounds
+        this.capMovement();        
+
         //package player position
         let data = {
             x: this.x,
@@ -122,6 +126,24 @@ function Player(xPos, yPos) {
         }
         else if(mouseX > (WIDTH / 2) + mouseBufferZone) {
             this.x += this.speed;
+        }
+    }
+
+    this.capMovement = function(){
+        //cap x position
+        if(this.x - this.size < 0) {
+            this.x = this.size;
+        }
+        else if (this.x + this.size > GAME_WIDTH) {
+            this.x = GAME_WIDTH - this.size;
+        }
+
+        //cap y position
+        if(this.y - this.size < 0) {
+            this.y = this.size;
+        }
+        else if(this.y + this.size > GAME_HEIGHT) {
+            this.y = GAME_HEIGHT - this.size;
         }
     }
 }

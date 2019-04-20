@@ -7,7 +7,7 @@ let GAME_WIDTH = 1000;
 let GAME_HEIGHT = 1000;
 let FRAMERATE = 30;
 
-let mouseBufferZone = 100;
+let mouseBufferZone = 50;
 var survivorColor;
 var zombieColor;
 
@@ -69,11 +69,28 @@ function draw() {
         //clear previous screen
         background(51);
 
+        //draw borders
+        drawBorder()
 
         //render player
         player.render();
     }
     
+}
+
+function drawBorder() {
+    fill(255);
+
+    //calculate positions relative to player
+    let xLeft = (WIDTH / 2) - player.x;
+    let xRight = (WIDTH / 2) + (GAME_WIDTH - player.x);
+    let yTop = (HEIGHT / 2) - player.y;
+    let yBottom = (HEIGHT / 2) + (GAME_HEIGHT - player.y);
+
+    line(xLeft, yTop, xRight, yTop);
+    line(xLeft, yTop, xLeft, yBottom);
+    line(xRight, yTop, xRight, yBottom);
+    line(xLeft, yBottom, xRight, yBottom);
 }
 
 function Player(xPos, yPos) {
@@ -104,6 +121,8 @@ function Player(xPos, yPos) {
             y: this.y,
             isZombie: this.isZombie,
         };
+
+        console.log(data);
 
         //send player position to server
         socket.emit('update', data);

@@ -38,12 +38,13 @@ function checkDataFields() {
 }
 
 function login() {
-    let email = document.getElementById("email");
-    let pass = document.getElementById("password");
 
     //check data fields are filled
     if(checkDataFields() == false) { return; } 
         
+    let email = document.getElementById("email").value;
+    let password = document.getElementById("password").value;
+
     //create user in firebase
     firebase.auth().createUserWithEmailAndPassword(email, password).catch(function(error) {
         // Handle Errors here.

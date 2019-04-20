@@ -12,66 +12,35 @@ firebase.initializeApp(config);
 
 // Get a reference to the database service
 let database = firebase.database();
-let ref = database.ref('users');
 
+
+function checkDataFields() {
+    //check for empty fields
+    let name = document.getElementById("username");
+    let pass = document.getElementById("password");
+    if(name.value == "" || pass.value == "") {
+        window.alert("All entry fields must be filled");
+        return false;
+    }
+
+    return true;
+}
 
 function login() {
     let name = document.getElementById("username");
     let pass = document.getElementById("password");
-    let error = document.getElementById("loginError");
 
-    let nullFields = false;
-
-    //check for empty fields
-    if(name.value == "" || pass.value == "") {
-        document.getElementById("loginError").innerHTML = "All Fields Must Be Filled";
-    }
-    else {
-        console.log("Username: " + name.value + ", Password: " + pass.value);
-
-        let userExists = false;
-
-        //get user data
-        ref.on('value', function(data) {
-
+    //check data fields are filled
+    if(checkDataFields() == false) { return; } 
         
-            let users = data.val();
-            if(users != null) {
-                let keys = Object.keys(users);
+    console.log("Loggin in: "+ name.value);
 
-                //check for username already in database
-                for(var i = 0; i < keys.length; i++) {
-                    let k = keys[i];
-                    let currName = users[k].name;
-                    if(currName == name.value) {
-                        userExists = true;
+    //get users from database
+    let users = database.ref("users");
+    let keys = Object.keys(users);
 
-                        //if password is correct, login
-                        if(users[k].password == pass.value) {
-                            users[k].online = true;
-                        }
+    for(var i = 0; i < keys.length; i++) {
 
-                        break;
-                    }
-                }
-            }
-
-            if(userExists == false) {
-
-                console.log("Creating new user");
-    
-                let data = {
-                    name: name.value,
-                    password: pass.value,
-                    online: true
-                }
-                ref.push(data);
-            }
-
-        }, function(err) {
-            console.log(err);
-        })
-
-        
     }
+
 }

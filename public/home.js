@@ -44,5 +44,15 @@ function login() {
     //check data fields are filled
     if(checkDataFields() == false) { return; } 
         
+    //create user in firebase
+    firebase.auth().createUserWithEmailAndPassword(email, password).catch(function(error) {
+        // Handle Errors here.
+        var errorCode = error.code;
+        var errorMessage = error.message;
 
+        window.alert("Error creating user in firebase");
+        console.log(errorCode);
+        console.log(errorMessage);
+        
+      });
 }

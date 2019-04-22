@@ -54,19 +54,16 @@ function newConnection(socket) {
     socket.on('start', function(data) {
         let client = new Client(socket.id, data.x, data.y)
         clients.push(client);
-        socket.emit("playerAdded");
+        socket.emit("playerAdded", socket.id);
     })
 
     //handle player updates
     socket.on('update', function(data) {
         let cl = clients[getIndexOfClient(socket.id)];
-
         if(cl != null) {
             cl.x = data.x;
             cl.y = data.y;
             cl.isZomb = data.isZombie;
-        }else {
-            console.log("error updating client information");
         }
     });
 

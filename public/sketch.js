@@ -12,6 +12,12 @@ let mouseBufferZone = 50;
 //if player has been added to server 
 let playerAdded = false;
 
+//id of player on server
+var ID;
+
+//array to hold data of other players
+let otherPlayers = [];
+
 var zombieColor;
 var survivorColor;
 
@@ -62,35 +68,15 @@ function setup() {
     }
     socket.emit('start', data);
 
-    socket.on("playerAdded", function() {
+    //set player id 
+    socket.on("playerAdded", function(data) {
+        ID = data;
         playerAdded = true;
     })
 
     socket.on("gameInfo", function(data) {
-
-        //clear previous screen
-        background(51);
-
-         //draw borders
-         drawBorder()
-
-        //draw clients
-        for(var i = 0; i < data.length; i++) {
-
-            if(data[i].isZombie) {
-                fill(zombieColor);
-            }else {
-                fill(survivorColor);
-            }
-
-            stroke(255);
-    
-            let x = (WIDTH / 2) + (data[i].x - player.x);
-            let y = (HEIGHT / 2) + (data[i].y - player.y);
-    
-            ellipse(x, y, player.size, player.size);
-        }
-        
+        //update otherplayers array
+        otherPlayers = data;
     })
 
 }
@@ -100,6 +86,41 @@ function draw() {
     if(playerAdded) {
         //update player
         player.update();
+
+        //clear previous screen
+        background(51);
+
+        //draw borders
+        drawBorder()
+
+        //draw clients 
+        for(var i = 0; i < otherPlayers.length; i++) {
+
+            //don't draw player position in server
+            if(otherPlayers[i].id != ID) {
+
+                //set color
+                if(otherPlayers[i].isZombie) {
+                    fill(zombieColor);
+                }else {
+                    fill(survivorColor);
+                }
+
+                //set stroke to white
+                stroke(255);
+        
+                //calculate x and y positions of render
+                let x = (WIDTH / 2) + (otherPlayers[i].x - player.x);
+                let y = (HEIGHT / 2) + (otherPlayers[i].y - player.y);
+        
+                //draw other player
+                ellipse(x, y, player.size, player.size);
+            }
+        }
+
+
+        //draw player
+        player.render();
     }
  
 }

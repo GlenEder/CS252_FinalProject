@@ -151,6 +151,8 @@ function Player(xPos, yPos) {
     this.userColor = survivorColor;
 
 
+
+
     this.render = function() {
         stroke(255);
         fill(this.userColor);
@@ -160,10 +162,8 @@ function Player(xPos, yPos) {
     this.update = function() {
         //handle mouse movement 
         if(mouseIsPressed) {this.moveInMouseDirection();}
-        
-        //handle shooting
-        if(keyIsPressed) {this.shootBullet();}
-
+       
+    
         //cap movement to stay inside bounds
         this.capMovement();        
 
@@ -181,9 +181,7 @@ function Player(xPos, yPos) {
 
     }
 
-    this.shootBullet = function() {
-        
-    }
+
 
     this.moveInMouseDirection = function() {
     
@@ -223,24 +221,7 @@ function Player(xPos, yPos) {
     }
 }
 
-function OtherPlayer(x, y, zomb) {
-    this.xPos = x;
-    this.yPos = y;
-    this.isZombie = zomb;
 
-    this.render = function() {
 
-        if(this.isZombie) {
-            fill(zombieColor);
-        }else {
-            fill(survivorColor);
-        }
-
-        let x = (WIDTH / 2) + (data.x - player.x);
-        let y = (HEIGHT / 2) + (data.y - player.y);
-
-        ellipse(x, y, player.size, player.size);
-    }
-}
 
 

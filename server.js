@@ -49,27 +49,36 @@ function newConnection(socket) {
     })
 
     //handle player updates
-    socket.on('update', updatePlayerInfo);
+    socket.on('update', function(data) {
+        let cl = clients[getIndexOfClient(socket.id)];
+
+        if(cl != null) {
+            cl.x = data.x;
+            cl.y = data.y;
+            cl.isZomb = data.isZombie;
+        }
+    });
+
+    //handle disconnets 
+    socket.on('disconnect', function() {
+        //log disconnect
+        console.log("User " + socket.id + " disconnected");
+
+        //remove user from client list
+        clients.splice(getIndexOfClient(socket.id), 1);
+    });
 
 }
 
-function updatePlayerInfo(data) {
-    //find client 
-    var currClient;
+function getIndexOfClient(socketID) {
+    //loop through clients 
     for(var i = 0; i < clients.length; i++) {
-        if(socket.id == clients[i].id) {
-            //set client
-            currClient = clients[i];
-            break;
+        if(socketID == clients[i].id) {
+            return i;
         }
     }
 
-    if(currClient != null) {
-        //update information
-        currClient.x = data.x;
-        currClient.y = data.y;
-        currClient.isZomb = data.isZombie;
-    }
-   
-}
+    return -1;
+} 
+
 

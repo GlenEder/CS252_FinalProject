@@ -158,8 +158,12 @@ function Player(xPos, yPos) {
     }
 
     this.update = function() {
+        //handle mouse movement 
         if(mouseIsPressed) {this.moveInMouseDirection();}
         
+        //handle shooting
+        if(keyIsPressed) {this.shootBullet();}
+
         //cap movement to stay inside bounds
         this.capMovement();        
 
@@ -175,6 +179,10 @@ function Player(xPos, yPos) {
         //send player position to server
         socket.emit('update', data);
 
+    }
+
+    this.shootBullet = function() {
+        
     }
 
     this.moveInMouseDirection = function() {

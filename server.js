@@ -75,7 +75,11 @@ function newConnection(socket) {
         console.log("User " + socket.id + " disconnected");
 
         //remove user from client list
-        clients.splice(getIndexOfClient(socket.id), 1);
+        let index = getIndexOfClient(socket.id);
+        if(index >= 0) {
+            clients.splice(index, 1);
+        }
+       
     });
 
 }

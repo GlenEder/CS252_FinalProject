@@ -58,6 +58,10 @@ function setup() {
     }
     socket.emit('start', data);
 
+    socket.on("gameInfo", function(data) {
+        console.log(data);
+    })
+
 }
 
 function draw() {
@@ -123,7 +127,7 @@ function Player(xPos, yPos) {
             isZombie: this.isZombie,
         };
 
-        console.log(data);
+        //console.log(data);
 
         //send player position to server
         socket.emit('update', data);

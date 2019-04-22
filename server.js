@@ -36,6 +36,14 @@ let io = socket(server);
 //set event for new connection
 io.sockets.on('connection', newConnection);
 
+//set interval for sending player information
+setInterval(broadcastInfo, 1000 / 20);
+
+//send clinets array to every client 
+function broadcastInfo() {
+    io.sockets.emit("gameInfo", clients);
+}
+
 
 function newConnection(socket) {
 

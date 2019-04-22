@@ -5,7 +5,7 @@ let WIDTH = 601;
 let HEIGHT = 501;
 let GAME_WIDTH = 1000;
 let GAME_HEIGHT = 1000;
-let FRAMERATE = 30;
+let FRAMERATE = 60;
 
 let mouseBufferZone = 50;
 

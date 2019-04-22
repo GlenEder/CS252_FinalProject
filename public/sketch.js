@@ -8,8 +8,12 @@ let GAME_HEIGHT = 1000;
 let FRAMERATE = 30;
 
 let mouseBufferZone = 50;
-var survivorColor;
+
+//if player has been added to server 
+let playerAdded = false;
+
 var zombieColor;
+var survivorColor;
 
 
 // Initialize Firebase
@@ -58,28 +62,46 @@ function setup() {
     }
     socket.emit('start', data);
 
+    socket.on("playerAdded", function() {
+        playerAdded = true;
+    })
+
     socket.on("gameInfo", function(data) {
-        console.log(data);
+
+        //clear previous screen
+        background(51);
+
+         //draw borders
+         drawBorder()
+
+        //draw clients
+        for(var i = 0; i < data.length; i++) {
+
+            if(data[i].isZombie) {
+                fill(zombieColor);
+            }else {
+                fill(survivorColor);
+            }
+
+            stroke(255);
+    
+            let x = (WIDTH / 2) + (data[i].x - player.x);
+            let y = (HEIGHT / 2) + (data[i].y - player.y);
+    
+            ellipse(x, y, player.size, player.size);
+        }
+        
     })
 
 }
 
 function draw() {
 
-    if(player != null) {
+    if(playerAdded) {
         //update player
         player.update();
-
-        //clear previous screen
-        background(51);
-
-        //draw borders
-        drawBorder()
-
-        //render player
-        player.render();
     }
-    
+ 
 }
 
 function drawBorder() {
@@ -172,8 +194,7 @@ function Player(xPos, yPos) {
     }
 }
 
-function OtherPlayer(name, x, y, zomb) {
-    this.username = name;
+function OtherPlayer(x, y, zomb) {
     this.xPos = x;
     this.yPos = y;
     this.isZombie = zomb;

@@ -149,14 +149,31 @@ function Player(xPos, yPos) {
     this.speed = 2;
     this.isZombie = false;
     this.userColor = survivorColor;
+    this.swordLength = 20;
 
 
 
 
     this.render = function() {
+        //draw body
         stroke(255);
         fill(this.userColor);
         ellipse(WIDTH / 2, HEIGHT / 2, this.size, this.size);
+
+        //draw sword and sheild
+        fill(color(100));
+        
+        //calc sword
+        let halfWidth = WIDTH / 2;
+        let halfHeight = HEIGHT / 2;
+
+        let distanceToMouse = int(dist(halfWidth, halfHeight, mouseX, mouseY));
+
+        let swordX = cos(distanceToMouse) * this.swordLength;
+        let swordY = sin(distanceToMouse) * this.swordLength;
+
+        line(halfWidth, halfHeight, halfWidth + swordX, halfHeight + swordY);
+
     }
 
     this.update = function() {

@@ -3,6 +3,8 @@ let socket = require('socket.io');  //import socket.io
 
 let game = require('./game.js');
 
+let postRate = 48;
+
 //set port from args 
 var PORT;
 if(arguments.length != 2) {
@@ -37,7 +39,7 @@ let io = socket(server);
 io.sockets.on('connection', newConnection);
 
 //set interval for sending player information
-setInterval(broadcastInfo, 1000 / 20);
+setInterval(broadcastInfo, 1000 / postRate);
 
 //send clinets array to every client 
 function broadcastInfo() {

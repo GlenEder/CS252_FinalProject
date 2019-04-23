@@ -152,14 +152,25 @@ function Player(xPos, yPos) {
     this.userColor = survivorColor;
     this.maxShieldLevel = 100;
     this.shieldLevel = 100;
-    this.shieldRechargeRate = 3;
-    this.shieldDischargeRate = 5;
+    this.minShieldLevel = 75;       //min amount of shield energy to turn on
+    this.shieldRechargeRate = 2;    //how fast shield regains energy 
+    this.shieldDischargeRate = 5;   //how fast shield uses energy
+    this.isShieldOn = false;        //if shield is on or not
+    this.shieldRadius = 5;          //shield drawing radius (added on to player size)
+    this.shieldColor = color(0, 203, 255);  //shield color
 
 
 
 
 
     this.render = function() {
+
+        //draw shield on player if on
+        if(this.isShieldOn) {
+            fill(this.shieldColor);
+            ellipse(WIDTH / 2, HEIGHT / 2, this.size + this.shieldRadius, this.size + this.shieldRadius);
+        }
+
         //draw body
         stroke(255);
         fill(this.userColor);
@@ -168,21 +179,37 @@ function Player(xPos, yPos) {
         //draw shield energy bar
         fill(255);
         rect(10, 10, this.maxShieldLevel, 13);
-        fill(color(0, 203, 255));
+        fill(this.shieldColor);
         rect(10, 10, this.shieldLevel, 13);
+
+        
 
     }
 
     this.update = function() {
-        //handle mouse movement 
-        if(mouseIsPressed) {this.moveInMouseDirection();}
 
-        
-       
+        //handle mouse input
+        if(mouseIsPressed) {
+
+            //use left click for movment 
+            if (mouseButton === LEFT) {
+                this.moveInMouseDirection();
+
+                //cap movement to stay inside bounds
+                this.capMovement(); 
+            }
+
+            //user right click for shield 
+            if(mouseButton == RIGHT) {
+                //turn shield on if above min level
+                if(this.shieldLevel > this.minShieldLevel) {this.isShieldOn = true;}
+            }
+
+        }       
     
-        //cap movement to stay inside bounds
-        this.capMovement();        
-
+        //update shield data
+        this.updateShield();
+            
         //package player position
         let data = {
             x: this.x,
@@ -198,6 +225,31 @@ function Player(xPos, yPos) {
     }
 
 
+    //handle shield 
+    this.updateShield = function() {
+        //if shield is on
+        if(this.isShieldOn) {
+            //lower shield power level
+            this.shieldLevel -= this.shieldDischargeRate;
+
+            //cap at 0
+            if(this.shieldLevel < 0) {
+                this.shieldLevel = 0;
+
+                //turn shield off if hit 0
+                this.isShieldOn = false;
+            }
+        }
+        else {
+            //recharge shield
+            this.shieldLevel += this.shieldRechargeRate;
+
+            //cap max shieldLevel
+            if(this.shieldLevel > this.maxShieldLevel) {
+                this.shieldLevel = this.maxShieldLevel;
+            }
+        }
+    }
 
     this.moveInMouseDirection = function() {
     

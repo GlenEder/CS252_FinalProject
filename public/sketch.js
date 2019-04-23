@@ -264,7 +264,7 @@ function Player(xPos, yPos) {
 
         if(this.canExplode) {
             //create new explosion and add to array
-            let newExplo = new Explosion(this.x, this.y);
+            let newExplo = new Explosion(this.x, this.y, true);
             explosions.push(newExplo);
 
             //set can exploed to false and start timer 
@@ -358,10 +358,11 @@ function keyPressed() {
     }
 }
 
-function Explosion(xPos, yPos) {
+function Explosion(xPos, yPos, isOwned) {
 
     this.x = xPos;
     this.y = yPos;
+    this.own = isOwned;
     this.size = 20;
     this.expRate = 2;   //rate of explosion expansion
     this.maxSize = 100;  //max size of explosion

@@ -19,6 +19,9 @@ var ID;
 //array to hold data of other players
 let otherPlayers = [];
 
+//array of explosions
+let explosions = [];
+
 var zombieColor;
 var survivorColor;
 
@@ -93,7 +96,25 @@ function draw() {
         background(51);
 
         //draw borders
-        drawBorder()
+        drawBorder();
+
+        //create position data of player for explosion render
+        let position = {
+            x: player.x,
+            y: player.y
+        };
+
+        //update explosions
+        for(var i = explosions.length - 1; i >= 0; i--) {
+            //draw explosion
+            explosions[i].render(position);
+
+            //check if done
+            if(explosions[i].update()) {
+                explosions.splice(i, 1);
+            }
+           
+        }
 
         //draw clients 
         for(var i = 0; i < otherPlayers.length; i++) {
@@ -128,6 +149,7 @@ function draw() {
 }
 
 function drawBorder() {
+    stroke(255);
     fill(255);
 
     //calculate positions relative to player
@@ -151,8 +173,9 @@ function Player(xPos, yPos) {
     this.speed = 2;
     this.isZombie = false;
     this.userColor = survivorColor;
-    this.maxShieldLevel = 100;
-    this.shieldLevel = 100;
+
+    this.maxShieldLevel = 100;      //max shield energy
+    this.shieldLevel = 100;         //current shield energy
     this.minShieldLevel = 75;       //min amount of shield energy to turn on
     this.shieldRechargeRate = 2;    //how fast shield regains energy 
     this.shieldDischargeRate = 5;   //how fast shield uses energy
@@ -160,6 +183,9 @@ function Player(xPos, yPos) {
     this.shieldRadius = 5;          //shield drawing radius (added on to player size)
     this.shieldColor = color(0, 203, 255);  //shield color
 
+    this.canExplode = true;
+    this.explodeCooldown = 3;
+    this.explodeTimer = 0;
 
 
 
@@ -215,6 +241,9 @@ function Player(xPos, yPos) {
     
         //update shield data
         this.updateShield();
+
+        //udpate explosion data
+        this.updateExplosion();
             
         //package player position
         let data = {
@@ -230,6 +259,32 @@ function Player(xPos, yPos) {
 
     }
 
+
+    this.createExplosion = function() {
+
+        if(this.canExplode) {
+            //create new explosion and add to array
+            let newExplo = new Explosion(this.x, this.y);
+            explosions.push(newExplo);
+
+            //set can exploed to false and start timer 
+            this.canExplode = false;
+            this.explodeTimer = 0;
+        }
+        
+        
+    }
+
+    this.updateExplosion = function() {
+        //increase timer
+        this.explodeTimer++;
+            
+        //check if timer exceds cooldown
+        if(this.explodeTimer > this.explodeCooldown * FRAMERATE) {
+            this.canExplode = true;
+            this.explodeTimer = 0;
+        } 
+    }
 
     //handle shield 
     this.updateShield = function() {
@@ -294,6 +349,43 @@ function Player(xPos, yPos) {
         }
     }
 }
+
+function keyPressed() {
+    if(keyCode == 69) {
+        if(player != null) {
+            player.createExplosion();
+        }
+    }
+}
+
+function Explosion(xPos, yPos) {
+
+    this.x = xPos;
+    this.y = yPos;
+    this.size = 20;
+    this.expRate = 2;   //rate of explosion expansion
+    this.maxSize = 100;  //max size of explosion
+    this.color = color(249, 149, 0);    //color of explosion
+
+    this.update = function() {
+        //increase size
+        this.size += this.expRate;
+        if(this.size > this.maxSize) {
+            this.size = this.maxSize;
+            return true;
+        }
+
+        return false;
+    }
+
+    this.render = function(pos) {
+        stroke(this.color);
+        noFill();
+        ellipse((WIDTH / 2) + (this.x - pos.x), (HEIGHT / 2) + (this.y - pos.y), this.size, this.size);
+    }
+
+}
+
 
 
 

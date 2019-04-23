@@ -205,6 +205,10 @@ function Player(xPos, yPos) {
                 if(this.shieldLevel > this.minShieldLevel) {this.isShieldOn = true;}
             }
 
+        }
+        else {
+            //turn shield off
+            this.isShieldOn = false;
         }    
         
         

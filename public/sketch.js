@@ -149,6 +149,10 @@ function Player(xPos, yPos) {
     this.speed = 2;
     this.isZombie = false;
     this.userColor = survivorColor;
+    this.maxShieldLevel = 100;
+    this.shieldLevel = 100;
+    this.shieldRechargeRate = 3;
+    this.shieldDischargeRate = 5;
 
 
 
@@ -159,6 +163,12 @@ function Player(xPos, yPos) {
         stroke(255);
         fill(this.userColor);
         ellipse(WIDTH / 2, HEIGHT / 2, this.size, this.size);
+
+        //draw shield energy bar
+        fill(255);
+        rect(10, 10, this.maxShieldLevel, 13);
+        fill(color(0, 203, 255));
+        rect(10, 10, this.shieldLevel, 13);
 
     }
 

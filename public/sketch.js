@@ -90,6 +90,11 @@ function setup() {
         otherPlayers = data;
     })
 
+    socket.on('explosion', function(data) {
+        let newExplo = new Explosion(data.x, data.y, false);
+        explosions.push(newExplo);
+    })
+
 }
 
 function draw() {
@@ -284,6 +289,13 @@ function Player(xPos, yPos) {
             //set can exploed to false and start timer 
             this.canExplode = false;
             this.explodeTimer = 0;
+
+            //send explosion to server
+            let data = {
+                x: this.x,
+                y: this.y
+            };
+            socket.emit('explosion', data);
         }
         
         

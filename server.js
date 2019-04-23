@@ -71,6 +71,10 @@ function newConnection(socket) {
         }
     });
 
+    socket.on('explosion', function(data) {
+        socket.broadcast.emit('explosion', data);
+    })
+
     //handle disconnets 
     socket.on('disconnect', function() {
         //log disconnect

@@ -8,6 +8,7 @@ let GAME_HEIGHT = 1000;
 let FRAMERATE = 60;
 
 let mouseBufferZone = 50;
+let spawnBufferZone = 50;
 
 //if player has been added to server 
 let playerAdded = false;
@@ -62,7 +63,7 @@ function setup() {
     socket = io.connect('http://localhost:6656');
 
     //create new player and notify server 
-    player = new Player(random(GAME_WIDTH), random(GAME_HEIGHT));
+    player = new Player(random(spawnBufferZone,  GAME_WIDTH - spawnBufferZone), random(spawnBufferZone, GAME_HEIGHT - spawnBufferZone));
     let data = {
         x: player.x,
         y: player.y
@@ -194,7 +195,6 @@ function Player(xPos, yPos) {
             //use left click for movment 
             if (mouseButton == LEFT) {
                 this.moveInMouseDirection();
-
                 //cap movement to stay inside bounds
                 this.capMovement(); 
             }
@@ -205,7 +205,9 @@ function Player(xPos, yPos) {
                 if(this.shieldLevel > this.minShieldLevel) {this.isShieldOn = true;}
             }
 
-        }       
+        }    
+        
+        
     
         //update shield data
         this.updateShield();

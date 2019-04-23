@@ -45,7 +45,8 @@ firebase.auth().onAuthStateChanged(function(user) {
 
 function setup() {
     //create html canvas
-    createCanvas(WIDTH, HEIGHT);
+    let canvas = createCanvas(WIDTH, HEIGHT);
+
     background(51);
 
     //set colors 
@@ -175,6 +176,8 @@ function Player(xPos, yPos) {
     this.update = function() {
         //handle mouse movement 
         if(mouseIsPressed) {this.moveInMouseDirection();}
+
+        
        
     
         //cap movement to stay inside bounds
@@ -233,6 +236,8 @@ function Player(xPos, yPos) {
         }
     }
 }
+
+
 
 
 

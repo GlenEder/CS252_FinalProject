@@ -22,8 +22,13 @@ let otherPlayers = [];
 //array of explosions
 let explosions = [];
 
+//color variables
 var zombieColor;
 var survivorColor;
+var shieldColor;
+
+//shield drawing radius (added on to player size)
+let shieldRadius = 5;          
 
 
 // Initialize Firebase
@@ -56,6 +61,7 @@ function setup() {
     //set colors 
     zombieColor = color('red');
     survivorColor = color('blue');
+    shieldColor = color(0, 203, 255);  
 
     //set framerate
     frameRate(FRAMERATE)
@@ -121,8 +127,19 @@ function draw() {
 
             //don't draw player position in server
             if(otherPlayers[i].id != ID) {
+        
+                //calculate x and y positions of render
+                let x = (WIDTH / 2) + (otherPlayers[i].x - player.x);
+                let y = (HEIGHT / 2) + (otherPlayers[i].y - player.y);
+        
+                //draw shield if on 
+                if(otherPlayers[i].shield) {
+                    stroke(shieldColor);
+                    fill(shieldColor);
+                    ellipse(x, y, player.size + shieldRadius, player.size + shieldRadius);
+                }
 
-                //set color
+                //set color of player
                 if(otherPlayers[i].isZombie) {
                     fill(zombieColor);
                 }else {
@@ -131,11 +148,7 @@ function draw() {
 
                 //set stroke to white
                 stroke(255);
-        
-                //calculate x and y positions of render
-                let x = (WIDTH / 2) + (otherPlayers[i].x - player.x);
-                let y = (HEIGHT / 2) + (otherPlayers[i].y - player.y);
-        
+
                 //draw other player
                 ellipse(x, y, player.size, player.size);
             }
@@ -180,8 +193,8 @@ function Player(xPos, yPos) {
     this.shieldRechargeRate = 2;    //how fast shield regains energy 
     this.shieldDischargeRate = 5;   //how fast shield uses energy
     this.isShieldOn = false;        //if shield is on or not
-    this.shieldRadius = 5;          //shield drawing radius (added on to player size)
-    this.shieldColor = color(0, 203, 255);  //shield color
+    
+    
 
     this.canExplode = true;
     this.explodeCooldown = 3;
@@ -194,9 +207,9 @@ function Player(xPos, yPos) {
 
         //draw shield on player if on
         if(this.isShieldOn) {
-            stroke(this.shieldColor);
-            fill(this.shieldColor);
-            ellipse(WIDTH / 2, HEIGHT / 2, this.size + this.shieldRadius, this.size + this.shieldRadius);
+            stroke(shieldColor);
+            fill(shieldColor);
+            ellipse(WIDTH / 2, HEIGHT / 2, this.size + shieldRadius, this.size + shieldRadius);
         }
 
         //draw body
@@ -207,7 +220,7 @@ function Player(xPos, yPos) {
         //draw shield energy bar
         fill(255);
         rect(10, 10, this.maxShieldLevel, 13);
-        fill(this.shieldColor);
+        fill(shieldColor);
         rect(10, 10, this.shieldLevel, 13);
 
     
@@ -250,6 +263,7 @@ function Player(xPos, yPos) {
             x: this.x,
             y: this.y,
             isZombie: this.isZombie,
+            shield: this.isShieldOn
         };
 
         //console.log(data);

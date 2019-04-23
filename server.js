@@ -21,6 +21,7 @@ function Client(id, x, y) {
     this.x = x;
     this.y = y;
     this.isZomb = false;
+    this.shield = false;
 }
 
 //create server application 
@@ -66,6 +67,7 @@ function newConnection(socket) {
             cl.x = data.x;
             cl.y = data.y;
             cl.isZomb = data.isZombie;
+            cl.shield = data.shield;
         }
     });
 

@@ -168,6 +168,7 @@ function Player(xPos, yPos) {
 
         //draw shield on player if on
         if(this.isShieldOn) {
+            stroke(this.shieldColor);
             fill(this.shieldColor);
             ellipse(WIDTH / 2, HEIGHT / 2, this.size + this.shieldRadius, this.size + this.shieldRadius);
         }
@@ -183,8 +184,7 @@ function Player(xPos, yPos) {
         fill(this.shieldColor);
         rect(10, 10, this.shieldLevel, 13);
 
-        
-
+    
     }
 
     this.update = function() {

@@ -192,7 +192,7 @@ function Player(xPos, yPos) {
         if(mouseIsPressed) {
 
             //use left click for movment 
-            if (mouseButton === LEFT) {
+            if (mouseButton == LEFT) {
                 this.moveInMouseDirection();
 
                 //cap movement to stay inside bounds

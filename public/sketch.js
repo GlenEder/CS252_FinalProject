@@ -145,7 +145,7 @@ function draw() {
                 }
 
                 //set color of player
-                if(otherPlayers[i].isZombie) {
+                if(otherPlayers[i].isZomb) {
                     fill(zombieColor);
                 }else {
                     fill(survivorColor);
@@ -219,7 +219,13 @@ function Player(xPos, yPos) {
 
         //draw body
         stroke(255);
-        fill(this.userColor);
+        
+        if(this.isZombie) {
+            fill(zombieColor);
+        }else {
+            fill(survivorColor);
+        }
+
         ellipse(WIDTH / 2, HEIGHT / 2, this.size, this.size);
 
         //draw shield energy bar
@@ -262,6 +268,9 @@ function Player(xPos, yPos) {
 
         //udpate explosion data
         this.updateExplosion();
+
+        //check for collisions with explosios
+        this.checkCollisions();
             
         //package player position
         let data = {
@@ -276,6 +285,25 @@ function Player(xPos, yPos) {
         //send player position to server
         socket.emit('update', data);
 
+    }
+
+
+    this.checkCollisions = function() {
+        //check for intersections of player with explosions 
+        for(var i = 0; i < explosions.length; i++) {
+            //check if explosison is own
+            if(explosions[i].own == false) {
+                let xdiff = this.x - explosions[i].x;
+                let ydiff = this.y - explosions[i].y;
+                let distance = Math.sqrt((xdiff * xdiff) + (ydiff * ydiff));
+
+                if(distance < this.halfSize + (explosions[i].size / 2)) {
+                    this.isZombie = true;
+                }
+
+                break;
+            }
+        }
     }
 
 

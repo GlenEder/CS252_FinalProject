@@ -1,4 +1,6 @@
 
+
+
 function Game(ID) {
 
     this.id = ID;       //game id

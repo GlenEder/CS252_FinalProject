@@ -1,26 +1,54 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>Feast>Infect Home</title>
+        <title>Feast>Infect Login</title>
         
         <style>
            * {
                text-align: center;
            }
+
+           html, body {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+           }
+
+           section {
+            width: 100%;
+            height: 100%;
+            margin: auto;
+            background-size: cover;
+            display: table;
+            top: 0;
+           }
+
+           div {
+            display: table-cell;
+            vertical-align: middle;
+            width: 100%;
+            max-width: none;
+           }
+
         </style>
+
+
+        <script src="https://www.gstatic.com/firebasejs/5.9.4/firebase.js"></script>
+        <script src="home.js"></script>
+      
+
     </head>
     <body>
-        <h1>FEAST>INFECT</h1>
+        <section>
+            <div>
+                <input type="email" id="email" placeholder="E-mail"><br><br>
+                <input type="password" id="password" placeholder="Password"><br><br>
+                <button onclick="login()">Login / Register</button>
+                <p style="color:red" id="loginError"></p>
+            </div>
+        </section>
 
-        <form>
-            Username:<br>
-            <input type="text" name="username"><br>
-            Password:<br>
-            <input type="password" name="password">
-        </form>
-        
-        <a href="createAccount.html">Create New Account</a>
-        <a href="Feast-Infect.html">Launch Game</a>
 
     </body>
 </html>

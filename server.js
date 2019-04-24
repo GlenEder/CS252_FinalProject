@@ -3,7 +3,7 @@ let socket = require('socket.io');  //import socket.io
 
 let game = require('./game.js');
 
-let postRate = 48;
+let postRate = 60;
 
 //set port from args 
 var PORT;
@@ -21,13 +21,14 @@ function Client(id, x, y) {
     this.x = x;
     this.y = y;
     this.isZomb = false;
+    this.shield = false;
 }
 
 //create server application 
 let app = express();
 
 //set server to listen for requests on port
-let server = app.listen(PORT);
+let server = app.listen(PORT, '192.168.1.37');
 
 //allow server to use 'public' directory
 app.use(express.static('public'));
@@ -43,7 +44,25 @@ setInterval(broadcastInfo, 1000 / postRate);
 
 //send clinets array to every client 
 function broadcastInfo() {
-    io.sockets.emit("gameInfo", clients);
+    //check for winner
+    var winnerId;
+    let surviviorCount = 0;
+    for(var i = 0; i < clients.length; i++) {
+        if(clients[i].isZomb == false) {
+            winnerId = clients[i].id;
+            surviviorCount++;
+        }
+    }
+
+
+    if(surviviorCount == 1 && clients.length > 1) {
+        io.sockets.emit('winner', winnerId);
+    }else {
+        io.sockets.emit("gameInfo", clients);
+    }
+
+
+   
 }
 
 
@@ -66,8 +85,13 @@ function newConnection(socket) {
             cl.x = data.x;
             cl.y = data.y;
             cl.isZomb = data.isZombie;
+            cl.shield = data.shield;
         }
     });
+
+    socket.on('explosion', function(data) {
+        socket.broadcast.emit('explosion', data);
+    })
 
     //handle disconnets 
     socket.on('disconnect', function() {

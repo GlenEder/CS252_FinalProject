@@ -9,6 +9,7 @@ let FRAMERATE = 60;
 
 let mouseBufferZone = 50;
 let spawnBufferZone = 50;
+let textBuffer = 100;
 
 //if player has been added to server 
 let playerAdded = false;
@@ -22,8 +23,17 @@ let otherPlayers = [];
 //array of explosions
 let explosions = [];
 
+//color variables
 var zombieColor;
 var survivorColor;
+var shieldColor;
+
+//shield drawing radius (added on to player size)
+let shieldRadius = 5; 
+
+//if game is playing
+let gameOver = false;
+let winner = false;
 
 
 // Initialize Firebase
@@ -56,6 +66,7 @@ function setup() {
     //set colors 
     zombieColor = color('red');
     survivorColor = color('blue');
+    shieldColor = color(0, 203, 255);  
 
     //set framerate
     frameRate(FRAMERATE)
@@ -63,7 +74,7 @@ function setup() {
     
 
     //create socket to server
-    socket = io.connect('http://localhost:6656');
+    socket = io.connect('http://192.168.1.37:6656');
 
     //create new player and notify server 
     player = new Player(random(spawnBufferZone,  GAME_WIDTH - spawnBufferZone), random(spawnBufferZone, GAME_HEIGHT - spawnBufferZone));
@@ -84,11 +95,39 @@ function setup() {
         otherPlayers = data;
     })
 
+    socket.on('explosion', function(data) {
+        let newExplo = new Explosion(data.x, data.y, false);
+        explosions.push(newExplo);
+    })
+
+    socket.on('winner', function(data) {
+        if(ID == data) {
+            winner = true;
+        }
+        setInterval(displayOutcome, 500);
+        gameOver = true;
+    })
+
+}
+
+function displayOutcome() {
+    let x = random(GAME_WIDTH - textBuffer);
+    let y = random(GAME_HEIGHT - textBuffer);
+    stroke(0);
+    fill(random(255), random(255), random(255));
+
+    textSize(34);
+    if(winner) {
+        text("Winner", x - textBuffer, y);
+    }
+    else {
+        text("Loser", x - textBuffer, y);
+    }
 }
 
 function draw() {
 
-    if(playerAdded) {
+    if(playerAdded && !gameOver) {
         //update player
         player.update();
 
@@ -121,9 +160,20 @@ function draw() {
 
             //don't draw player position in server
             if(otherPlayers[i].id != ID) {
+        
+                //calculate x and y positions of render
+                let x = (WIDTH / 2) + (otherPlayers[i].x - player.x);
+                let y = (HEIGHT / 2) + (otherPlayers[i].y - player.y);
+        
+                //draw shield if on 
+                if(otherPlayers[i].shield) {
+                    stroke(shieldColor);
+                    fill(shieldColor);
+                    ellipse(x, y, player.size + shieldRadius, player.size + shieldRadius);
+                }
 
-                //set color
-                if(otherPlayers[i].isZombie) {
+                //set color of player
+                if(otherPlayers[i].isZomb) {
                     fill(zombieColor);
                 }else {
                     fill(survivorColor);
@@ -131,11 +181,7 @@ function draw() {
 
                 //set stroke to white
                 stroke(255);
-        
-                //calculate x and y positions of render
-                let x = (WIDTH / 2) + (otherPlayers[i].x - player.x);
-                let y = (HEIGHT / 2) + (otherPlayers[i].y - player.y);
-        
+
                 //draw other player
                 ellipse(x, y, player.size, player.size);
             }
@@ -180,8 +226,8 @@ function Player(xPos, yPos) {
     this.shieldRechargeRate = 2;    //how fast shield regains energy 
     this.shieldDischargeRate = 5;   //how fast shield uses energy
     this.isShieldOn = false;        //if shield is on or not
-    this.shieldRadius = 5;          //shield drawing radius (added on to player size)
-    this.shieldColor = color(0, 203, 255);  //shield color
+    
+    
 
     this.canExplode = true;
     this.explodeCooldown = 3;
@@ -194,20 +240,26 @@ function Player(xPos, yPos) {
 
         //draw shield on player if on
         if(this.isShieldOn) {
-            stroke(this.shieldColor);
-            fill(this.shieldColor);
-            ellipse(WIDTH / 2, HEIGHT / 2, this.size + this.shieldRadius, this.size + this.shieldRadius);
+            stroke(shieldColor);
+            fill(shieldColor);
+            ellipse(WIDTH / 2, HEIGHT / 2, this.size + shieldRadius, this.size + shieldRadius);
         }
 
         //draw body
         stroke(255);
-        fill(this.userColor);
+        
+        if(this.isZombie) {
+            fill(zombieColor);
+        }else {
+            fill(survivorColor);
+        }
+
         ellipse(WIDTH / 2, HEIGHT / 2, this.size, this.size);
 
         //draw shield energy bar
         fill(255);
         rect(10, 10, this.maxShieldLevel, 13);
-        fill(this.shieldColor);
+        fill(shieldColor);
         rect(10, 10, this.shieldLevel, 13);
 
     
@@ -244,12 +296,16 @@ function Player(xPos, yPos) {
 
         //udpate explosion data
         this.updateExplosion();
+
+        //check for collisions with explosios
+        this.checkCollisions();
             
         //package player position
         let data = {
             x: this.x,
             y: this.y,
             isZombie: this.isZombie,
+            shield: this.isShieldOn
         };
 
         //console.log(data);
@@ -257,6 +313,27 @@ function Player(xPos, yPos) {
         //send player position to server
         socket.emit('update', data);
 
+    }
+
+
+    this.checkCollisions = function() {
+        //check for intersections of player with explosions 
+        for(var i = 0; i < explosions.length; i++) {
+            //check if explosison is own
+            if(explosions[i].own == false) {
+                let xdiff = this.x - explosions[i].x;
+                let ydiff = this.y - explosions[i].y;
+                let distance = Math.sqrt((xdiff * xdiff) + (ydiff * ydiff));
+
+                if(distance < this.halfSize + (explosions[i].size / 2)) {
+                    if(this.isShieldOn == false) {
+                        this.isZombie = true;
+                    }   
+                }
+
+                break;
+            }
+        }
     }
 
 
@@ -270,6 +347,13 @@ function Player(xPos, yPos) {
             //set can exploed to false and start timer 
             this.canExplode = false;
             this.explodeTimer = 0;
+
+            //send explosion to server
+            let data = {
+                x: this.x,
+                y: this.y
+            };
+            socket.emit('explosion', data);
         }
         
         

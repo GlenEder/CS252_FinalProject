@@ -330,8 +330,6 @@ function Player(xPos, yPos) {
                         this.isZombie = true;
                     }   
                 }
-
-                break;
             }
         }
     }

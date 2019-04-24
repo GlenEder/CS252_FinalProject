@@ -37,6 +37,19 @@ var config = {
 };
 firebase.initializeApp(config);
 
+//handle window closing 
+window.onbeforeunload = function() {
+    firebase.auth().signOut().then(function() {
+        // Sign-out successful.
+        console.log("Logged out of firebase");
+      }).catch(function(error) {
+        // An error happened.
+        console.log("Failed to logout of firebase");
+      });
+
+      return null;
+}
+
 //handle user logged in/out
 firebase.auth().onAuthStateChanged(function(user) {
     if (user) {
@@ -63,7 +76,7 @@ function setup() {
     
 
     //create socket to server
-    socket = io.connect('http://localhost:6656');
+    socket = io();
 
     //create new player and notify server 
     player = new Player(random(spawnBufferZone,  GAME_WIDTH - spawnBufferZone), random(spawnBufferZone, GAME_HEIGHT - spawnBufferZone));

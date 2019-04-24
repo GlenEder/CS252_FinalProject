@@ -9,6 +9,7 @@ let FRAMERATE = 60;
 
 let mouseBufferZone = 50;
 let spawnBufferZone = 50;
+let textBuffer = 100;
 
 //if player has been added to server 
 let playerAdded = false;
@@ -28,7 +29,11 @@ var survivorColor;
 var shieldColor;
 
 //shield drawing radius (added on to player size)
-let shieldRadius = 5;          
+let shieldRadius = 5; 
+
+//if game is playing
+let gameOver = false;
+let winner = false;
 
 
 // Initialize Firebase
@@ -69,7 +74,7 @@ function setup() {
     
 
     //create socket to server
-    socket = io.connect('http://localhost:6656');
+    socket = io.connect('http://192.168.1.37:6656');
 
     //create new player and notify server 
     player = new Player(random(spawnBufferZone,  GAME_WIDTH - spawnBufferZone), random(spawnBufferZone, GAME_HEIGHT - spawnBufferZone));
@@ -95,11 +100,34 @@ function setup() {
         explosions.push(newExplo);
     })
 
+    socket.on('winner', function(data) {
+        if(ID == data) {
+            winner = true;
+        }
+        setInterval(displayOutcome, 500);
+        gameOver = true;
+    })
+
+}
+
+function displayOutcome() {
+    let x = random(GAME_WIDTH - textBuffer);
+    let y = random(GAME_HEIGHT - textBuffer);
+    stroke(0);
+    fill(random(255), random(255), random(255));
+
+    textSize(34);
+    if(winner) {
+        text("Winner", x - textBuffer, y);
+    }
+    else {
+        text("Loser", x - textBuffer, y);
+    }
 }
 
 function draw() {
 
-    if(playerAdded) {
+    if(playerAdded && !gameOver) {
         //update player
         player.update();
 
@@ -298,7 +326,9 @@ function Player(xPos, yPos) {
                 let distance = Math.sqrt((xdiff * xdiff) + (ydiff * ydiff));
 
                 if(distance < this.halfSize + (explosions[i].size / 2)) {
-                    this.isZombie = true;
+                    if(this.isShieldOn == false) {
+                        this.isZombie = true;
+                    }   
                 }
 
                 break;

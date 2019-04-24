@@ -1,8 +1,8 @@
 var socket;     //socket connection to server
 var player;     //player object
 
-let WIDTH = 601;
-let HEIGHT = 501;
+let WIDTH = 801;
+let HEIGHT = 601;
 let GAME_WIDTH = 1000;
 let GAME_HEIGHT = 1000;
 let FRAMERATE = 60;
@@ -47,6 +47,19 @@ var config = {
 };
 firebase.initializeApp(config);
 
+//handle window closing 
+window.onbeforeunload = function() {
+    firebase.auth().signOut().then(function() {
+        // Sign-out successful.
+        console.log("Logged out of firebase");
+      }).catch(function(error) {
+        // An error happened.
+        console.log("Failed to logout of firebase");
+      });
+
+      return null;
+}
+
 //handle user logged in/out
 firebase.auth().onAuthStateChanged(function(user) {
     if (user) {
@@ -74,7 +87,7 @@ function setup() {
     
 
     //create socket to server
-    socket = io.connect('http://192.168.1.37:6656');
+    socket = io();
 
     //create new player and notify server 
     player = new Player(random(spawnBufferZone,  GAME_WIDTH - spawnBufferZone), random(spawnBufferZone, GAME_HEIGHT - spawnBufferZone));
@@ -256,11 +269,19 @@ function Player(xPos, yPos) {
 
         ellipse(WIDTH / 2, HEIGHT / 2, this.size, this.size);
 
+        //draw explosion timer
+        fill(255);
+        rect(10, 10, this.explodeCooldown * FRAMERATE, 13);
+        fill(color(249, 149, 0));
+        rect(10, 10, this.explodeTimer, 13);
+
         //draw shield energy bar
         fill(255);
-        rect(10, 10, this.maxShieldLevel, 13);
-        fill(shieldColor);
-        rect(10, 10, this.shieldLevel, 13);
+        rect(10, 30, this.maxShieldLevel, 13);
+        fill(this.shieldColor);
+        rect(10, 30, this.shieldLevel, 13);
+
+        
 
     
     }
@@ -364,7 +385,7 @@ function Player(xPos, yPos) {
         //check if timer exceds cooldown
         if(this.explodeTimer > this.explodeCooldown * FRAMERATE) {
             this.canExplode = true;
-            this.explodeTimer = 0;
+            this.explodeTimer = this.explodeCooldown * FRAMERATE;
         } 
     }
 

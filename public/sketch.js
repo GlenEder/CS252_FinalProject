@@ -278,7 +278,7 @@ function Player(xPos, yPos) {
         //draw shield energy bar
         fill(255);
         rect(10, 30, this.maxShieldLevel, 13);
-        fill(this.shieldColor);
+        fill(shieldColor);
         rect(10, 30, this.shieldLevel, 13);
 
         

@@ -462,8 +462,10 @@ function Explosion(xPos, yPos, isOwned) {
     }
 
     this.render = function(pos) {
+        this.color.setAlpha(255);
         stroke(this.color);
-        noFill();
+        this.color.setAlpha(50);
+        fill(this.color)
         ellipse((WIDTH / 2) + (this.x - pos.x), (HEIGHT / 2) + (this.y - pos.y), this.size, this.size);
     }
 

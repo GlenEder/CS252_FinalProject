@@ -8,7 +8,7 @@ let postRate = 60;
 //set port from args 
 var PORT;
 if(arguments.length != 2) {
-    PORT = 6656;
+    PORT = 80;
 }else {
     PORT = arguments[1]
 }

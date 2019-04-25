@@ -28,7 +28,7 @@ function Client(id, x, y) {
 let app = express();
 
 //set server to listen for requests on port
-let server = app.listen(PORT, '192.168.1.37');
+let server = app.listen(PORT, '162.243.170.207');
 
 //allow server to use 'public' directory
 app.use(express.static('public'));
